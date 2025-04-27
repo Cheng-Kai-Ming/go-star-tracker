@@ -10,12 +10,14 @@ import (
 	"strings"
 )
 
+import md "github.com/nao1215/markdown"
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	fmt.Println("Please enter the GitHub author name to check their stars")
 	for {
-		fmt.Print("> ") // 顯示提示符
+		fmt.Print("> ")
 		scanner.Scan()
 		input := scanner.Text()
 		command := strings.TrimSpace(input)
@@ -29,7 +31,7 @@ func main() {
 			if err != nil {
 				fmt.Printf("Error: %v\n", err)
 			} else {
-				fmt.Printf("Stars: %d\n", stars)
+				buildMarkdown(stars)
 			}
 		}
 	}
@@ -69,4 +71,11 @@ func getStars(author string) (int, error) {
 	}
 
 	return stars, nil
+}
+
+func buildMarkdown(stars int) {
+	starsStr := strings.Repeat("*", stars)
+	md.NewMarkdown(os.Stdout).
+		H1("GitHub Stars:" + strconv.Itoa(stars)).
+		PlainText(starsStr).Build()
 }
